@@ -85,9 +85,38 @@ def load_and_process_data(uploaded_file):
     
     return df
 
-##### start form 50 min 
+
+
 
 uploaded_file = st.file_uploader("Choose a file", type=["csv"])
 if uploaded_file is not None:
     st.markdown ("File Uploaded Successfully")
-    df=load_and_process_data(uploaded_file)
+    with st.spinner('Wait for it...loading data..'):
+        df=load_and_process_data(uploaded_file)
+        
+    
+    
+    ### Excecutive summary 
+    
+    st.markdown("-------")
+    st.header("Excecutive Summary")
+    col1, col2, col3, col4, col5 = st.columns(5)
+  
+  
+    total_events = len(df)
+    critical_events = len(df[df['risk_level'] == 'Extreme'])
+    low_risk_events = len(df[df['risk_level'] == 'Low'])
+    medium_risk_events = len(df[df['risk_level'] == 'Medium'])
+    high_risk_events = len(df[df['risk_level'] == 'High'])
+
+    with col1:
+        st.metric("Total Events", total_events)
+    with col2:
+        st.metric("Critical Events", critical_events)
+    with col3:
+        st.metric("Low Risk Events", low_risk_events)
+    with col4:
+        st.metric("Medium Risk Events", medium_risk_events)
+    with col5:
+        st.metric("High Risk Events", high_risk_events) 
+        
