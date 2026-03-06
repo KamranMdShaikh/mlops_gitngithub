@@ -4,7 +4,7 @@ import numpy as np
 # import matplotlib.pyplot as plt
 # import seaborn as sns
 # import plotly.express as px
-# from datetime import datetime
+from datetime import datetime, timedelta
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -119,4 +119,29 @@ if uploaded_file is not None:
         st.metric("Medium Risk Events", medium_risk_events)
     with col5:
         st.metric("High Risk Events", high_risk_events) 
-        
+    
+    
+    ## Alarts
+    
+    st.markdown("-------")
+    st.header("Current Alerts")
+
+    now = datetime.now()
+    recent_events = df[df['time'] >= (now - timedelta(hours=24))]
+    alert_df = recent_events[recent_events['magnitude'] >= 4.5].copy()
+    alert_df['time_ago'] = (now - alert_df['time']).dt.total_seconds() / 3600
+
+    if len(alert_df) > 0:
+        st.error(f"High Risk Events in Last 24h: {len(alert_df)}")
+
+        for _, row in alert_df.iterrows():
+            st.warning(
+                f"**M{row['magnitude']:.1f}** - {row['place'][:50]} | {row['time_ago']:.1f} hours ago"
+            )
+
+    else:
+        st.success("No High Risk Events")
+    
+    
+    
+    #### Start form 1 hr 12m
