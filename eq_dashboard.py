@@ -144,4 +144,57 @@ if uploaded_file is not None:
     
     
     
-    #### Start form 1 hr 12m
+    
+    
+    ###### Sidebar
+    
+    st.markdown("-------")
+    st.sidebar.header("Filters") 
+
+
+    # Time
+    time_window = st.sidebar.selectbox(
+        "Time Window",
+        ["All Time", "Last 7 Days", "Last 30 Days", "Last 90 Days",
+        "Last 1 Year", "Last 3 Years", "Last 5 Years", "Last 10 Years", "Custom"]
+    )
+
+    if time_window == "Custom":
+        start_date = st.sidebar.date_input("Start Date", df['date'].min())
+        end_date = st.sidebar.date_input("End Date", df['date'].max())
+
+        filter_df = df[(df["date"] >= start_date) & (df["date"] <= end_date)]
+
+    else:
+        days = {
+            "All Time": 99999,
+            "Last 7 Days": 7,
+            "Last 30 Days": 30,
+            "Last 90 Days": 90,
+            "Last 1 Year": 365,
+            "Last 3 Years": 365 * 3,
+            "Last 5 Years": 365 * 5,
+            "Last 10 Years": 365 * 10
+        }
+
+        cutoff = df['time'].max() - timedelta(days=days[time_window])
+        filter_df = df[df['time'] >= cutoff]
+       
+    
+    # assume, df 
+    
+    ### Sidebars Manitude & Depth
+    
+    mag_range = st.sidebar.slider("Magnitude Range", 
+                                  float(df['magnitude'].min()), float(df['magnitude'].max()), 
+                                  (float(df['magnitude'].min()), float(df['magnitude'].max())))
+    
+    depth_range = st.sidebar.slider("Depth Range", 
+                                    float(df['depth'].min()), float(df['depth'].max()), 
+                                    (float(df['depth'].min()), float(df['depth'].max())))
+
+
+    
+    
+    ####
+    
